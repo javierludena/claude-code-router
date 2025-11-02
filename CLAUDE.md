@@ -1,30 +1,38 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Este archivo proporciona guía a Claude Code cuando trabaja con código en este repositorio.
 
-## Commands
+## Comandos Disponibles
 
--   **Build the project**:
+-   **Compilar el proyecto**:
     ```bash
     npm run build
     ```
--   **Start the router server**:
+-   **Iniciar el router**:
     ```bash
     ccr start
     ```
--   **Stop the router server**:
+-   **Detener el router**:
     ```bash
     ccr stop
     ```
--   **Check the server status**:
+-   **Reiniciar el router**:
+    ```bash
+    ccr restart
+    ```
+-   **Ver estado del servicio**:
     ```bash
     ccr status
     ```
--   **Run Claude Code through the router**:
+-   **Ejecutar Claude Code con el router**:
     ```bash
-    ccr code "<your prompt>"
+    ccr code "tu prompt aquí"
     ```
--   **Release a new version**:
+-   **Abrir UI de configuración**:
+    ```bash
+    ccr ui
+    ```
+-   **Publicar nueva versión**:
     ```bash
     npm run release
     ```

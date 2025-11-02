@@ -9,15 +9,42 @@
 
 ## ✨ Características
 
-- **Enrutamiento de Modelos**: Dirige peticiones a diferentes modelos según la tarea (background, razonamiento, contexto largo)
+### Ventajas de Claude Code
+- **Compatible con cualquier IDE**: Funciona en Visual Studio, VSCode, IntelliJ, etc. (se ejecuta desde terminal)
+- **Más eficiente que Cline**: Llamadas optimizadas = **menor coste** en tokens
+- **Sin dependencia de extensiones**: No necesitas instalar plugins en tu IDE
+
+### Funcionalidades del Router
+- **Enrutamiento Inteligente**: Asigna automáticamente el modelo óptimo según la tarea
 - **Multi-Proveedor**: Soporta OpenAI, DeepSeek, Ollama, Gemini, OpenRouter y proxies compatibles
 - **Cambio Dinámico**: Cambia modelos sobre la marcha con `/model provider,modelo`
-- **UI Web**: Interfaz gráfica con `ccr ui` para configuración visual
-- **Optimización de Costos**: Usa modelos más baratos para tareas simples automáticamente
+- **UI Web**: Interfaz gráfica con `ccr ui` para configuración y monitoreo
+- **Optimización de Costos**: Usa Haiku para tareas simples, Sonnet para código, Gemini para contextos largos
 
 ---
 
 ## 🚀 Instalación Rápida
+
+### 0. Requisitos Previos - Instalar Node.js (si no lo tienes)
+
+**Windows:**
+1. Descarga e instala [NVM for Windows](https://github.com/coreybutler/nvm-windows/releases)
+2. Instala la última versión de Node.js:
+```bash
+nvm install latest
+nvm use latest
+```
+
+**Linux/Mac:**
+1. Instala [NVM](https://github.com/nvm-sh/nvm):
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+```
+2. Instala la última versión de Node.js:
+```bash
+nvm install node
+nvm use node
+```
 
 ### 1. Instalar Claude Code (si no lo tienes)
 ```bash
@@ -53,7 +80,7 @@ Crea el archivo de configuración en `~/.claude-code-router/config.json` (el rou
 **Windows:** `C:\Users\TU_USUARIO\.claude-code-router\config.json`
 **Linux/Mac:** `~/.claude-code-router/config.json`
 
-**Para proxy OpenAI compatible (ejemplo con Altia):**
+**Para proxy OpenAI compatible (ejemplo con Altia mycopilotgold):**
 ```json
 {
   "LOG": true,
@@ -75,10 +102,17 @@ Crea el archivo de configuración en `~/.claude-code-router/config.json` (el rou
     "background": "altia,mycopilotgold-claude-haiku-4.5",
     "think": "altia,mycopilotgold-anthropic-claude-sonnet-4.5",
     "longContext": "altia,mycopilotgold-gemini-2.5-pro",
-    "longContextThreshold": 60000
+    "longContextThreshold": 24000
   }
 }
 ```
+
+**Para proxy OpenAI compatible (ejemplo con Altia mycopilotsilver):**
+```
+añadir aqui alguien cuando realice la configuracion y PR
+```
+
+
 
 ### 4. Iniciar el Router
 ```bash
@@ -115,55 +149,87 @@ claude           # Ejecutar Claude Code original que funciona con claude pro (su
 - **`background`**: Modelo para tareas ligeras (usar modelo más barato como Haiku)
 - **`think`**: Modelo para razonamiento complejo (Plan Mode)
 - **`longContext`**: Modelo para contextos largos >60K tokens (recomendado: Gemini 2.5 Pro)
-- **`longContextThreshold`**: Umbral de tokens para activar longContext (default: 60000)
+- **`longContextThreshold`**: Umbral de tokens para activar longContext (default: 24000)
 
-### Ejemplos de Providers
+### Ver Configuración de Contexto
 
-**OpenAI / Proxies compatibles:**
-```json
-{
-  "name": "openai",
-  "api_base_url": "https://api.openai.com/v1/chat/completions",
-  "api_key": "sk-...",
-  "models": ["gpt-4", "gpt-4-turbo"]
-}
-```
+Para revisar cuánto contexto tiene configurado tu Claude Code:
 
-**DeepSeek:**
-```json
-{
-  "name": "deepseek",
-  "api_base_url": "https://api.deepseek.com/chat/completions",
-  "api_key": "sk-...",
-  "models": ["deepseek-chat", "deepseek-reasoner"],
-  "transformer": { "use": ["deepseek"] }
-}
-```
+```bash
+# Ver configuración actual
+cat ~/.claude/config.json
 
-**Ollama (local):**
-```json
-{
-  "name": "ollama",
-  "api_base_url": "http://localhost:11434/v1/chat/completions",
-  "api_key": "ollama",
-  "models": ["qwen2.5-coder:latest"]
-}
+# Abrir UI del router para ver logs y uso
+ccr ui
 ```
 
 ---
 
-## 🔧 Variables de Entorno
+## 💡 Cómo Usar Claude Code
 
-Puedes usar variables de entorno para las API keys:
+### Atajos de Teclado
 
+- **`Ctrl + Enter`**: Nueva línea para escribir más instrucciones
+- **`Shift + Tab`**: Iterar entre los 3 modos:
+  - **Auto-aceptar**: Ejecuta cambios automáticamente
+  - **Plan**: Modo planificación (usa el modelo `think`)
+  - **Normal**: Requiere aprobación manual para cada cambio
+
+### Comandos Útiles
+
+```bash
+./init                    # Inicializar proyecto con CLAUDE.md
+/model provider,modelo    # Cambiar modelo manualmente
+/clear                    # Limpiar historial completo
+/compact                  # Compactar historial (mantiene resumen)
+```
+
+#### /clear vs /compact
+
+- **`/clear`**: Borra todo el historial de conversación. Empieza completamente fresco.
+- **`/compact`**: Compacta el historial manteniendo un resumen, reduce tokens pero conserva contexto.
+
+> **💡 Buena práctica:** No tengas miedo de usar `/clear` frecuentemente. Aunque parece drástico, **da mejores resultados** porque evita confusión de contextos antiguos. Úsalo al terminar cada tarea para empezar limpio.
+
+### Comando /context
+
+Muestra información sobre el uso de contexto actual:
+
+```bash
+/context
+```
+
+Verás algo como:
+```
+⛁ ⛁ ⛁ ⛁ ⛁  claude-sonnet-4-5 · 82k/200k tokens (41%)
+⛁ System prompt: 2.1k tokens
+⛁ Messages: 22.1k tokens
+⛶ Free space: 118k (59.2%)
+```
+
+### Modelo de Largo Contexto
+
+**Importante:** El router cuenta tokens por **petición individual**, no el contexto total acumulado.
+
+**¿Cómo se activa?**
+Cuando una sola petición supera 24k tokens, cambia automáticamente a Gemini (longContext).
+
+**Ejemplo para probarlo:**
+```bash
+ccr code "Lee completamente el archivo package-lock.json y analízalo"
+```
+
+**Forzar manualmente:**
+```bash
+/model altia,mycopilotgold-gemini-2.5-pro
+```
+
+**Ajustar umbral:**
 ```json
 {
-  "OPENAI_API_KEY": "$OPENAI_API_KEY",
-  "Providers": [
-    {
-      "api_key": "$OPENAI_API_KEY"
-    }
-  ]
+  "Router": {
+    "longContextThreshold": 30000  // Activar antes
+  }
 }
 ```
 
