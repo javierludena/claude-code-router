@@ -100,7 +100,7 @@ Crea el archivo de configuración en `~/.claude-code-router/config.json` (el rou
 ```
 
 **Para proxy OpenAI compatible (ejemplo con Altia mycopilotsilver):**
-```
+```json
 {
   "LOG": true,
   "PORT": 3456,
