@@ -216,12 +216,10 @@ Usuario TIENE QUE intervenir y hacer el trabajo de investigación:
    línea 271, posiblemente te falte en el DTO añadir el método"
   ⎿ Read AutoMapperConfig.cs (42 lines)
 
-Usuario TIENE QUE seguir guiando:
+Gemini:
 > "También tienes que comprobar el fichero de mapping de automapper
    en altia.controltower.portal.web/automapper/automapperconfig.cs
    en la zona de expediciones. Gracias por la ayuda."
-
-Gemini: "Soy Gemini, un modelo de lenguaje grande, entrenado por Google."
 ```
 
 **Con Claude Sonnet/Haiku (trabajo autónomo correcto):**
