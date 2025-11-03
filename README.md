@@ -25,7 +25,7 @@
 
 ## 🚀 Instalación Rápida
 
-### 0. Requisitos Previos - Instalar Node.js (si no lo tienes)
+### 0. Requisitos Previos: Instalar Node.js (si no lo tienes)
 
 **Windows:**
 1. Descarga e instala [NVM for Windows](https://github.com/coreybutler/nvm-windows/releases)
@@ -33,17 +33,6 @@
 ```bash
 nvm install latest
 nvm use latest
-```
-
-**Linux/Mac:**
-1. Instala [NVM](https://github.com/nvm-sh/nvm):
-```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
-```
-2. Instala la última versión de Node.js:
-```bash
-nvm install node
-nvm use node
 ```
 
 ### 1. Instalar Claude Code (si no lo tienes)
