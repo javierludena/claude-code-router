@@ -16,10 +16,10 @@
 
 ### Funcionalidades del Router
 - **Enrutamiento Inteligente**: Asigna automáticamente el modelo óptimo según la tarea
-- **Multi-Proveedor**: Soporta OpenAI, DeepSeek, Ollama, Gemini, OpenRouter y proxies compatibles
+- **Multi-Proveedor**: Soporta OpenAI, DeepSeek, Ollama, OpenRouter y proxies compatibles (Gemini no recomendado para desarrollo)
 - **Cambio Dinámico**: Cambia modelos sobre la marcha con `/model provider,modelo`
 - **UI Web**: Interfaz gráfica con `ccr ui` para configuración y monitoreo
-- **Optimización de Costos**: Usa Haiku para tareas simples, Sonnet para código, Gemini para contextos largos
+- **Optimización de Costos**: Usa Haiku para tareas simples, Sonnet para código complejo
 
 ---
 
@@ -158,11 +158,11 @@ claude           # Ejecutar Claude Code original que funciona con claude pro (su
 
 ### Estructura del Router
 
-- **`default`**: Modelo para tareas generales
-- **`background`**: Modelo para tareas ligeras (usar modelo más barato como Haiku)
-- **`think`**: Modelo para razonamiento complejo (Plan Mode)
-- **`longContext`**: Modelo para contextos largos >60K tokens (recomendado: Gemini 2.5 Pro)
-- **`longContextThreshold`**: Umbral de tokens para activar longContext (default: 24000)
+- **`default`**: Modelo para tareas generales (recomendado: Haiku para ahorro, Sonnet para calidad)
+- **`background`**: Modelo para tareas ligeras y automáticas (recomendado: Haiku - menor coste)
+- **`think`**: Modelo para razonamiento complejo y Plan Mode (recomendado: Sonnet 4.5)
+- **`longContext`**: Modelo para contextos largos >60k tokens (recomendado: Haiku o Sonnet. NO usar Gemini)
+- **`longContextThreshold`**: Umbral de tokens para activar longContext (recomendado: 999999 para desactivar cambio automático)
 
 ### Ver Configuración de Contexto
 
@@ -195,7 +195,55 @@ ccr ui
 - Input: $1.00/1M tokens
 - Output: $5.00/1M tokens
 
-> **💡 Optimización de costos:** Usa Haiku para tareas ligeras (background), Sonnet para desarrollo y código complejo (default/think), y Gemini para contextos muy largos (longContext).
+> **💡 Optimización de costos:** Usa Haiku para tareas ligeras y generales, Sonnet para tareas complejas en modo Plan (think).
+
+### ⚠️ NO SE RECOMIENDA Gemini 2.5 Pro para Desarrollo
+
+**Importante:** Aunque Gemini maneja contextos muy largos (hasta 2M tokens), **su calidad de trabajo autónomo es significativamente inferior** a Claude para desarrollo de software.
+
+**Problema real con Gemini - Ejemplo de conversación:**
+```
+Usuario: "Modifica el método ImportFotoAlbaran"
+
+Gemini:
+● Read(archivo.cs) → Error: File too large
+● Search(pattern: "ImportFotoAlbaran") → Found 0 lines
+  ⎿ Interrumpido
+
+Usuario TIENE QUE intervenir y hacer el trabajo de investigación:
+> "El error está en Altia.ControlTower.eURD.Web\App_Start\AutoMapperConfig.cs
+   línea 271, posiblemente te falte en el DTO añadir el método"
+  ⎿ Read AutoMapperConfig.cs (42 lines)
+
+Usuario TIENE QUE seguir guiando:
+> "También tienes que comprobar el fichero de mapping de automapper
+   en altia.controltower.portal.web/automapper/automapperconfig.cs
+   en la zona de expediciones. Gracias por la ayuda."
+
+Gemini: "Soy Gemini, un modelo de lenguaje grande, entrenado por Google."
+```
+
+**Problemas de Gemini:**
+- ❌ **TÚ tienes que buscar** dónde está el error
+- ❌ **TÚ tienes que decirle** qué archivos revisar
+- ❌ **TÚ tienes que investigar** las líneas problemáticas
+- ❌ No busca proactivamente en múltiples ubicaciones
+- ❌ No encadena búsquedas automáticamente
+- ❌ Te conviertes en su asistente, no al revés
+
+**Con Claude Sonnet/Haiku (trabajo autónomo correcto):**
+```
+● Read(archivo.cs) → Error: File too large
+● Search(pattern: "ImportFotoAlbaran", Controllers) → Found 56 lines
+● Search(pattern: "ImportFotoAlbaran", AutoMapperConfig) → Found
+● Search(pattern: "LOGF_ExpeditionsFiles", ControllersApi) → Found 141 lines
+● Search(pattern: "DTO definitions", Core) → Found 127 lines
+● TodoWrite: [5 pasos de modificación]
+● Edit(AutoMapperConfig.cs) → ✅
+● Edit(DTO.cs) → ✅
+```
+
+**Conclusión:** Gemini puede leer mucho contexto, pero **no lo procesa eficientemente para trabajo autónomo**. Claude Haiku/Sonnet son mucho mejores para desarrollo.
 
 ---
 
@@ -245,24 +293,19 @@ Verás algo como:
 
 **Importante:** El router cuenta tokens por **petición individual**, no el contexto total acumulado.
 
-**¿Cómo se activa?**
-Cuando una sola petición supera 24k tokens, cambia automáticamente a Gemini (longContext).
+**Recomendación:** Mantén `longContextThreshold` en 999999 para **desactivar** el cambio automático de modelo. Claude Haiku y Sonnet manejan bien archivos grandes usando búsquedas y lectura por secciones.
 
-**Ejemplo para probarlo:**
-```bash
-ccr code "Lee completamente el archivo package-lock.json y analízalo"
-```
+**Si necesitas contextos extremadamente largos:**
+- Claude Sonnet maneja hasta 200k tokens eficientemente
+- Usa comandos como Search y Read con offset/limit para archivos muy grandes
+- NO uses Gemini (ver advertencia en sección de Precios)
 
-**Forzar manualmente:**
-```bash
-/model altia,mycopilotgold-gemini-2.5-pro
-```
-
-**Ajustar umbral:**
+**Configuración recomendada:**
 ```json
 {
   "Router": {
-    "longContextThreshold": 30000  // Activar antes
+    "longContext": "altia,mycopilotgold-claude-haiku-4.5",
+    "longContextThreshold": 999999  // Nunca cambia automáticamente
   }
 }
 ```
