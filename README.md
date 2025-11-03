@@ -37,6 +37,9 @@ nvm use latest
 
 ### 1. Instalar Claude Code (si no lo tienes)
 ```bash
+#Permite scripts locales y requiere firma solo para scripts descargados:
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+
 npm install -g @anthropic-ai/claude-code
 ```
 
@@ -98,7 +101,29 @@ Crea el archivo de configuración en `~/.claude-code-router/config.json` (el rou
 
 **Para proxy OpenAI compatible (ejemplo con Altia mycopilotsilver):**
 ```
-añadir aqui alguien cuando realice la configuracion y PR
+{
+  "LOG": true,
+  "PORT": 3456,
+  "Providers": [
+    {
+      "name": "altia",
+      "api_base_url": "https://llmproxy.altia.es/v1/chat/completions",
+      "api_key": "TU_API_KEY_AQUI",
+      "models": [
+        "mycopilotsilver-gemini-2.5.pro",
+        "mycopilotsilver-claude-haiku-4.5"
+      ]
+    }
+  ],
+  "Router": {
+    "default": "altia,mycopilotsilver-gemini-2.5.pro",
+    "background": "altia,mycopilotsilver-claude-haiku-4.5",
+    "think": "altia,mycopilotsilver-gemini-2.5.pro",
+    "longContext": "altia,mycopilotsilver-gemini-2.5.pro",
+    "longContextThreshold": 24000
+  }
+}
+
 ```
 
 
