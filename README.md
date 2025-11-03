@@ -180,12 +180,13 @@ ccr ui
 
 ## 💰 Precios de Modelos
 
-### Claude Sonnet 4.5
+
+### Gemini 2.5 Pro
 **Pricing:**
 - Input: $1.25/1M tokens
 - Output: $10.00/1M tokens
 
-### Gemini 2.5 Pro
+### Claude Sonnet 4.5
 **Pricing:**
 - Input: $3.00/1M tokens
 - Output: $15.00/1M tokens
