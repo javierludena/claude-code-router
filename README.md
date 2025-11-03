@@ -223,14 +223,6 @@ Usuario TIENE QUE seguir guiando:
 Gemini: "Soy Gemini, un modelo de lenguaje grande, entrenado por Google."
 ```
 
-**Problemas de Gemini:**
-- ❌ **TÚ tienes que buscar** dónde está el error
-- ❌ **TÚ tienes que decirle** qué archivos revisar
-- ❌ **TÚ tienes que investigar** las líneas problemáticas
-- ❌ No busca proactivamente en múltiples ubicaciones
-- ❌ No encadena búsquedas automáticamente
-- ❌ Te conviertes en su asistente, no al revés
-
 **Con Claude Sonnet/Haiku (trabajo autónomo correcto):**
 ```
 ● Read(archivo.cs) → Error: File too large
