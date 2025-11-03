@@ -84,17 +84,16 @@ Crea el archivo de configuración en `~/.claude-code-router/config.json` (el rou
       "api_key": "TU_API_KEY_AQUI",
       "models": [
         "mycopilotgold-anthropic-claude-sonnet-4.5",
-        "mycopilotgold-claude-haiku-4.5",
-        "mycopilotgold-gemini-2.5-pro"
+        "mycopilotgold-claude-haiku-4.5"
       ]
     }
   ],
   "Router": {
-    "default": "altia,mycopilotgold-anthropic-claude-sonnet-4.5",
+    "default": "altia,mycopilotgold-claude-haiku-4.5",
     "background": "altia,mycopilotgold-claude-haiku-4.5",
     "think": "altia,mycopilotgold-anthropic-claude-sonnet-4.5",
-    "longContext": "altia,mycopilotgold-gemini-2.5-pro",
-    "longContextThreshold": 24000
+    "longContext": "altia,mycopilotgold-claude-haiku-4.5",
+    "longContextThreshold": 999999
   }
 }
 ```
@@ -110,17 +109,16 @@ Crea el archivo de configuración en `~/.claude-code-router/config.json` (el rou
       "api_base_url": "https://llmproxy.altia.es/v1/chat/completions",
       "api_key": "TU_API_KEY_AQUI",
       "models": [
-        "mycopilotsilver-gemini-2.5.pro",
         "mycopilotsilver-claude-haiku-4.5"
       ]
     }
   ],
   "Router": {
-    "default": "altia,mycopilotsilver-gemini-2.5.pro",
+    "default": "altia,mycopilotsilver-claude-haiku-4.5",
     "background": "altia,mycopilotsilver-claude-haiku-4.5",
-    "think": "altia,mycopilotsilver-gemini-2.5.pro",
-    "longContext": "altia,mycopilotsilver-gemini-2.5.pro",
-    "longContextThreshold": 24000
+    "think": "altia,mycopilotsilver-claude-haiku-4.5",
+    "longContext": "altia,mycopilotsilver-claude-haiku-4.5",
+    "longContextThreshold": 999999
   }
 }
 
@@ -177,6 +175,27 @@ cat ~/.claude/config.json
 # Abrir UI del router para ver logs y uso
 ccr ui
 ```
+
+---
+
+## 💰 Precios de Modelos
+
+### Claude Sonnet 4.5
+**Pricing:**
+- Input: $1.25/1M tokens
+- Output: $10.00/1M tokens
+
+### Gemini 2.5 Pro
+**Pricing:**
+- Input: $3.00/1M tokens
+- Output: $15.00/1M tokens
+
+### Claude Haiku 4.5
+**Pricing:**
+- Input: $1.00/1M tokens
+- Output: $5.00/1M tokens
+
+> **💡 Optimización de costos:** Usa Haiku para tareas ligeras (background), Sonnet para desarrollo y código complejo (default/think), y Gemini para contextos muy largos (longContext).
 
 ---
 

@@ -50,3 +50,53 @@ This project is a TypeScript-based router for Claude Code requests. It allows ro
 -   **Dependencies**: The project is built with `esbuild`. It has a key local dependency `@musistudio/llms`, which probably contains the core logic for interacting with different LLM APIs.
 -   `@musistudio/llms` is implemented based on `fastify` and exposes `fastify`'s hook and middleware interfaces, allowing direct use of `server.addHook`.
 - 无论如何你都不能自动提交git
+
+## Best Practices for Working with Large Files
+
+### When Reading Large Files (>25k tokens)
+
+**DO NOT** ask the user to manually edit files. **ALWAYS** handle file operations autonomously.
+
+**Correct approach when encountering file size limits:**
+
+1. **Use Search/Grep first** to locate specific content:
+   ```
+   Search for the specific method, class, or functionality you need
+   ```
+
+2. **Read file in sections** if you need more context:
+   ```
+   Use offset and limit parameters to read specific portions
+   ```
+
+3. **Chain multiple searches** to gather complete context:
+   ```
+   - First search: Find the target method
+   - Second search: Find related dependencies
+   - Third search: Find model/entity definitions
+   ```
+
+4. **Use TodoWrite** to track your investigation and implementation steps
+
+**Example of GOOD behavior:**
+```
+● Read(large-file.cs) → Error: File too large
+● Search(pattern: "TargetMethod", path: "large-file.cs", output_mode: "content") → Found
+● Search(pattern: "RelatedClass", path: "project", output_mode: "content") → Found
+● Edit(large-file.cs, old_string: "...", new_string: "...") → Success
+```
+
+**Example of BAD behavior (NEVER do this):**
+```
+● Read(large-file.cs) → Error: File too large
+● "Please manually edit the file at line 1234..."  ❌ WRONG
+● "I can't read the file, can you check it?"       ❌ WRONG
+```
+
+### General Guidelines
+
+- **Always complete the task autonomously** - Use available tools to work around limitations
+- **Never ask users to do manual edits** - You have Edit, Write, and Search tools
+- **Use Search before Read** - More efficient for large files
+- **Chain tool calls** - Gather all needed context before making changes
+- **Use TodoWrite** - Track complex multi-step tasks
