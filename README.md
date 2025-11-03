@@ -37,8 +37,8 @@ nvm use latest
 
 ### 1. Instalar Claude Code (si no lo tienes)
 ```bash
-#Permite scripts locales y requiere firma solo para scripts descargados:
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+#Permite todos los scripts pero avisa sobre scripts descargados:
+Set-ExecutionPolicy Unrestricted -Scope CurrentUser
 
 npm install -g @anthropic-ai/claude-code
 ```
@@ -130,6 +130,7 @@ Crea el archivo de configuración en `~/.claude-code-router/config.json` (el rou
 
 ### 4. Iniciar el Router
 ```bash
+#es necesario tener el terminal abierto o en la misma sesion
 ccr start
 ```
 
