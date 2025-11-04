@@ -180,12 +180,12 @@ ccr ui
 
 ## 💰 Precios de Modelos
 
-### Claude Sonnet 4.5
+### Gemini 2.5 Pro
 **Pricing:**
 - Input: $1.25/1M tokens
 - Output: $10.00/1M tokens
 
-### Gemini 2.5 Pro
+### Claude Sonnet 4.5
 **Pricing:**
 - Input: $3.00/1M tokens
 - Output: $15.00/1M tokens
@@ -215,6 +215,7 @@ Usuario TIENE QUE intervenir y hacer el trabajo de investigación:
    línea 271, posiblemente te falte en el DTO añadir el método"
   ⎿ Read AutoMapperConfig.cs (42 lines)
 
+<<<<<<< HEAD
 Usuario TIENE QUE seguir guiando:
 > "También tienes que comprobar el fichero de mapping de automapper
    en altia.controltower.portal.web/automapper/automapperconfig.cs
@@ -274,7 +275,6 @@ Gemini: "Soy Gemini, un modelo de lenguaje grande, entrenado por Google."
 > **💡 Buena práctica:** No tengas miedo de usar `/clear` frecuentemente. Aunque parece drástico, **da mejores resultados** porque evita confusión de contextos antiguos. Úsalo al terminar cada tarea para empezar limpio.
 
 ### Comando /context
-
 Muestra información sobre el uso de contexto actual:
 
 ```bash
