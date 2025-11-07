@@ -67,12 +67,40 @@ ccr -v
 
 ### 3. Crear Configuración
 
-Crea el archivo de configuración en `~/.claude-code-router/config.json` (el router lo buscará automáticamente en tu directorio home):
+El router busca automáticamente el archivo `config.json` en:
+- **Windows:** `C:\Users\TU_USUARIO\.claude-code-router\config.json`
+- **Linux/Mac:** `~/.claude-code-router/config.json`
 
-**Windows:** `C:\Users\TU_USUARIO\.claude-code-router\config.json`
-**Linux/Mac:** `~/.claude-code-router/config.json`
 
-**Para proxy OpenAI compatible (ejemplo con Altia mycopilotgold):**
+#### 🎯 Opción Usar ambos (Altia + OpenRouter)
+
+1. **Copia el archivo** `config.example.json` → `C:\Users\TU_USUARIO\.claude-code-router\config.json`
+2. **Edita el archivo** y reemplaza ambas claves API
+
+```powershell
+# Crear directorio si no existe
+mkdir "$env:USERPROFILE\.claude-code-router" -Force
+
+# Copiar configuración dual
+copy config.example.json "$env:USERPROFILE\.claude-code-router\config.json"
+
+# Editar y poner ambas API keys
+notepad "$env:USERPROFILE\.claude-code-router\config.json"
+```
+
+---
+
+#### 📁 Archivos de Configuración Disponibles:
+
+- **`config.altia.example.json`** - Solo Altia mycopilotgold
+- **`config.openrouter.example.json`** - Solo OpenRouter
+- **`config.example.json`** - Ambos proveedores (puedes cambiar entre ellos con `/model`)
+
+---
+
+### Ejemplos de Configuración Individual por Proveedor:
+
+**Altia mycopilotgold (Sonnet + Haiku):**
 ```json
 {
   "LOG": true,
@@ -98,7 +126,7 @@ Crea el archivo de configuración en `~/.claude-code-router/config.json` (el rou
 }
 ```
 
-**Para proxy OpenAI compatible (ejemplo con Altia mycopilotsilver):**
+**Altia mycopilotsilver (solo Haiku):**
 ```json
 {
   "LOG": true,
@@ -121,18 +149,116 @@ Crea el archivo de configuración en `~/.claude-code-router/config.json` (el rou
     "longContextThreshold": 999999
   }
 }
+```
 
+**OpenRouter (múltiples modelos):**
+```json
+{
+  "LOG": true,
+  "PORT": 3456,
+  "Providers": [
+    {
+      "name": "openrouter",
+      "api_base_url": "https://openrouter.ai/api/v1/chat/completions",
+      "api_key": "TU_API_KEY_OPENROUTER",
+      "models": [
+        "anthropic/claude-sonnet-4.5",
+        "anthropic/claude-haiku-4.5",
+        "anthropic/claude-opus-4.1"
+      ]
+    }
+  ],
+  "Router": {
+    "default": "openrouter,anthropic/claude-sonnet-4.5",
+    "background": "openrouter,anthropic/claude-haiku-4.5",
+    "think": "openrouter,anthropic/claude-opus-4.1",
+    "longContext": "openrouter,anthropic/claude-sonnet-4.5",
+    "longContextThreshold": 999999
+  }
+}
+```
+
+**Altia + OpenRouter (configuración dual):**
+```json
+{
+  "LOG": true,
+  "PORT": 3456,
+  "Providers": [
+    {
+      "name": "altia",
+      "api_base_url": "https://llmproxy.altia.es/v1/chat/completions",
+      "api_key": "TU_API_KEY_ALTIA",
+      "models": [
+        "mycopilotgold-anthropic-claude-sonnet-4.5",
+        "mycopilotgold-claude-haiku-4.5",
+        "mycopilotsilver-claude-haiku-4.5"
+      ]
+    },
+    {
+      "name": "openrouter",
+      "api_base_url": "https://openrouter.ai/api/v1/chat/completions",
+      "api_key": "TU_API_KEY_OPENROUTER",
+      "models": [
+        "anthropic/claude-sonnet-4.5",
+        "anthropic/claude-haiku-4.5",
+        "anthropic/claude-opus-4.1"
+      ]
+    }
+  ],
+  "Router": {
+    "default": "altia,mycopilotgold-claude-haiku-4.5",
+    "background": "altia,mycopilotgold-claude-haiku-4.5",
+    "think": "altia,mycopilotgold-anthropic-claude-sonnet-4.5",
+    "longContext": "altia,mycopilotgold-claude-haiku-4.5",
+    "longContextThreshold": 999999
+  }
+}
 ```
 
 
 
-### 4. Iniciar el Router
+
+### 4. Configuración Multi-Proveedor (Opcional)
+
+Puedes tener **múltiples proveedores configurados simultáneamente** en el mismo archivo `config.json`. Ver el archivo `config.example.json` para una configuración de ejemplo con Altia + OpenRouter:
+
+```json
+{
+  "Providers": [
+    {
+      "name": "altia",
+      "api_base_url": "https://llmproxy.altia.es/v1/chat/completions",
+      "api_key": "TU_API_KEY_ALTIA_AQUI",
+      "models": ["mycopilotgold-anthropic-claude-sonnet-4.5", "mycopilotgold-claude-haiku-4.5"]
+    },
+    {
+      "name": "openrouter",
+      "api_base_url": "https://openrouter.ai/api/v1/chat/completions",
+      "api_key": "TU_API_KEY_OPENROUTER_AQUI",
+      "models": ["anthropic/claude-3.5-sonnet", "anthropic/claude-3-haiku"]
+    }
+  ],
+  "Router": {
+    "default": "altia,mycopilotgold-claude-haiku-4.5",
+    "background": "altia,mycopilotgold-claude-haiku-4.5",
+    "think": "altia,mycopilotgold-anthropic-claude-sonnet-4.5"
+  }
+}
+```
+
+**Ventajas:**
+- ✅ Una sola configuración para múltiples proveedores
+- ✅ Cambio rápido entre modelos sin reiniciar
+- ✅ Altia como predeterminado, OpenRouter como respaldo
+- ✅ Prueba diferentes modelos fácilmente
+
+### 5. Iniciar el Router
 ```bash
 #es necesario tener el terminal abierto o en la misma sesion
 ccr start
 ```
 
-### 5. Ejecutar Claude Code
+### 6. Ejecutar Claude Code
 ```bash
 ccr code "tu prompt aquí"
 ```
@@ -151,6 +277,82 @@ ccr model        # Selector de modelos interactivo
 ccr code         # Ejecutar Claude Code con el router
 claude           # Ejecutar Claude Code original que funciona con claude pro (suscripcion)
 ```
+
+---
+
+## 🔄 Cambiar Entre Proveedores
+
+### Opción 1: Cambio Dinámico con `/model` (Recomendado)
+
+Durante una sesión de Claude Code, cambia de proveedor/modelo sin reiniciar:
+
+```bash
+# Comenzar sesión con Altia (predeterminado)
+ccr code "analiza este código"
+
+# Dentro de la sesión, cambiar a OpenRouter (Claude Sonnet)
+/model openrouter,anthropic/claude-3.5-sonnet
+
+# Cambiar a OpenRouter (Claude Haiku - más económico)
+/model openrouter,anthropic/claude-3-haiku
+
+# Cambiar de nuevo a Altia
+/model altia,mycopilotgold-claude-haiku-4.5
+
+# Ver todos los modelos disponibles
+/model
+```
+
+### Opción 2: Selector Interactivo
+
+Abre un menú interactivo para elegir proveedor y modelo:
+
+```bash
+ccr model
+```
+
+Verás un menú como:
+```
+? Select a provider:
+❯ altia
+  openrouter
+  
+? Select a model for altia:
+❯ mycopilotgold-anthropic-claude-sonnet-4.5
+  mycopilotgold-claude-haiku-4.5
+```
+
+### Opción 3: Cambiar de Proveedor Completo
+
+Si tienes configuraciones separadas, puedes cambiar fácilmente entre ellas:
+
+```powershell
+# Cambiar a configuración de Altia
+copy config.altia.example.json "$env:USERPROFILE\.claude-code-router\config.json"
+ccr restart
+
+# Cambiar a configuración de OpenRouter
+copy config.openrouter.example.json "$env:USERPROFILE\.claude-code-router\config.json"
+ccr restart
+
+# Cambiar a configuración dual (ambos proveedores)
+copy config.example.json "$env:USERPROFILE\.claude-code-router\config.json"
+ccr restart
+```
+
+**💡 Tip:** Guarda tus archivos de configuración con tus API keys en una carpeta segura para poder cambiar rápidamente:
+
+```powershell
+# Guardar configuraciones con API keys
+copy "$env:USERPROFILE\.claude-code-router\config.json" config.altia.mykeys.json
+copy "$env:USERPROFILE\.claude-code-router\config.json" config.openrouter.mykeys.json
+
+# Cambiar entre ellas cuando necesites
+copy config.altia.mykeys.json "$env:USERPROFILE\.claude-code-router\config.json"
+ccr restart
+```
+
+---
 
 ---
 
@@ -185,15 +387,15 @@ ccr ui
 - Input: $1.25/1M tokens
 - Output: $10.00/1M tokens
 
-### Claude Sonnet 4.5
-**Pricing:**
-- Input: $3.00/1M tokens
-- Output: $15.00/1M tokens
+### Sonnet
 
-### Claude Haiku 4.5
-**Pricing:**
-- Input: $1.00/1M tokens
-- Output: $5.00/1M tokens
+- Input price: $3.00/million tokens\
+- Output price: $15.00/million tokens
+
+### Opus
+
+-Context Window: 200,000 tokens\
+-Output price: $75.00/million tokens
 
 > **💡 Optimización de costos:** Usa Haiku para tareas ligeras y generales, Sonnet para tareas complejas en modo Plan (think).
 
