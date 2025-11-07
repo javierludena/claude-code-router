@@ -71,25 +71,6 @@ El router busca automáticamente el archivo `config.json` en:
 - **Windows:** `C:\Users\TU_USUARIO\.claude-code-router\config.json`
 - **Linux/Mac:** `~/.claude-code-router/config.json`
 
-
-#### 🎯 Opción Usar ambos (Altia + OpenRouter)
-
-1. **Copia el archivo** `config.example.json` → `C:\Users\TU_USUARIO\.claude-code-router\config.json`
-2. **Edita el archivo** y reemplaza ambas claves API
-
-```powershell
-# Crear directorio si no existe
-mkdir "$env:USERPROFILE\.claude-code-router" -Force
-
-# Copiar configuración dual
-copy config.example.json "$env:USERPROFILE\.claude-code-router\config.json"
-
-# Editar y poner ambas API keys
-notepad "$env:USERPROFILE\.claude-code-router\config.json"
-```
-
----
-
 #### 📁 Archivos de Configuración Disponibles:
 
 - **`config.altia.example.json`** - Solo Altia mycopilotgold
@@ -155,12 +136,15 @@ notepad "$env:USERPROFILE\.claude-code-router\config.json"
 ```json
 {
   "LOG": true,
+  "LOG_LEVEL": "info",
   "PORT": 3456,
+  "HOST": "127.0.0.1",
+  "APIKEY": "mi-clave-router-local",
   "Providers": [
     {
       "name": "openrouter",
       "api_base_url": "https://openrouter.ai/api/v1/chat/completions",
-      "api_key": "TU_API_KEY_OPENROUTER",
+       "api_key": "TU_API_KEY_AQUI",
       "models": [
         "anthropic/claude-sonnet-4.5",
         "anthropic/claude-haiku-4.5",
@@ -169,10 +153,10 @@ notepad "$env:USERPROFILE\.claude-code-router\config.json"
     }
   ],
   "Router": {
-    "default": "openrouter,anthropic/claude-sonnet-4.5",
+    "default": "openrouter,anthropic/claude-haiku-4.5",
     "background": "openrouter,anthropic/claude-haiku-4.5",
     "think": "openrouter,anthropic/claude-opus-4.1",
-    "longContext": "openrouter,anthropic/claude-sonnet-4.5",
+    "longContext": "openrouter,anthropic/claude-haiku-4.5",
     "longContextThreshold": 999999
   }
 }
@@ -218,49 +202,16 @@ notepad "$env:USERPROFILE\.claude-code-router\config.json"
 
 
 
-### 4. Configuración Multi-Proveedor (Opcional)
 
-Puedes tener **múltiples proveedores configurados simultáneamente** en el mismo archivo `config.json`. Ver el archivo `config.example.json` para una configuración de ejemplo con Altia + OpenRouter:
-
-```json
-{
-  "Providers": [
-    {
-      "name": "altia",
-      "api_base_url": "https://llmproxy.altia.es/v1/chat/completions",
-      "api_key": "TU_API_KEY_ALTIA_AQUI",
-      "models": ["mycopilotgold-anthropic-claude-sonnet-4.5", "mycopilotgold-claude-haiku-4.5"]
-    },
-    {
-      "name": "openrouter",
-      "api_base_url": "https://openrouter.ai/api/v1/chat/completions",
-      "api_key": "TU_API_KEY_OPENROUTER_AQUI",
-      "models": ["anthropic/claude-3.5-sonnet", "anthropic/claude-3-haiku"]
-    }
-  ],
-  "Router": {
-    "default": "altia,mycopilotgold-claude-haiku-4.5",
-    "background": "altia,mycopilotgold-claude-haiku-4.5",
-    "think": "altia,mycopilotgold-anthropic-claude-sonnet-4.5"
-  }
-}
-```
-
-**Ventajas:**
-- ✅ Una sola configuración para múltiples proveedores
-- ✅ Cambio rápido entre modelos sin reiniciar
-- ✅ Altia como predeterminado, OpenRouter como respaldo
-- ✅ Prueba diferentes modelos fácilmente
-
-### 5. Iniciar el Router
+### 4. Iniciar el Router
 ```bash
 #es necesario tener el terminal abierto o en la misma sesion
 ccr start
 ```
 
-### 6. Ejecutar Claude Code
+### 5. Ejecutar Claude Code
 ```bash
-ccr code "tu prompt aquí"
+ccr code
 ```
 
 ---
@@ -363,7 +314,7 @@ ccr restart
 - **`default`**: Modelo para tareas generales (recomendado: Haiku para ahorro, Sonnet para calidad)
 - **`background`**: Modelo para tareas ligeras y automáticas (recomendado: Haiku - menor coste)
 - **`think`**: Modelo para razonamiento complejo y Plan Mode (recomendado: Sonnet 4.5)
-- **`longContext`**: Modelo para contextos largos >60k tokens (recomendado: Haiku o Sonnet. NO usar Gemini)
+- **`longContext`**: Modelo para contextos largos >60k tokens (No tengo claro cual recomendar)
 - **`longContextThreshold`**: Umbral de tokens para activar longContext (recomendado: 999999 para desactivar cambio automático)
 
 ### Ver Configuración de Contexto
@@ -382,20 +333,38 @@ ccr ui
 
 ## 💰 Precios de Modelos
 
-### Gemini 2.5 Pro
-**Pricing:**
-- Input: $1.25/1M tokens
-- Output: $10.00/1M tokens
+### Claude-Haiku 4.5
 
-### Sonnet
+Context Window: 200,000 tokens\
+Input price: $1.00/million tokens\
+Cache writes price: $1.25/million tokens\
+Cache reads price: $0.10/million tokens\
+Output price: $5.00/million tokens
 
-- Input price: $3.00/million tokens\
-- Output price: $15.00/million tokens
+#### Gemini 2.5 pro
 
-### Opus
+Context Window: 1,048,576 tokens\
+Input price: $1.25/million tokens\
+Cache writes price: $1.63/million tokens\
+Cache reads price: $0.13/million tokens\
+Output price: $10.00/million tokens
 
--Context Window: 200,000 tokens\
--Output price: $75.00/million tokens
+### Claude-Sonnet 4.5
+
+Context Window: 200,000 tokens\
+Input price: $3.00/million tokens\
+Cache writes price: $3.75/million tokens\
+Cache reads price: $0.30/million tokens\
+Output price: $15.00/million tokens
+
+### Claude Opus 4.1
+
+Context Window: 200,000 tokens\
+Input price: $15.00/million tokens\
+Cache writes price: $18.75/million tokens\
+Cache reads price: $1.50/million tokens\
+Output price: $75.00/million tokens
+
 
 > **💡 Optimización de costos:** Usa Haiku para tareas ligeras y generales, Sonnet para tareas complejas en modo Plan (think).
 
@@ -425,14 +394,6 @@ Usuario TIENE QUE seguir guiando:
 
 Gemini: "Soy Gemini, un modelo de lenguaje grande, entrenado por Google."
 ```
-
-**Problemas de Gemini:**
-- ❌ **TÚ tienes que buscar** dónde está el error
-- ❌ **TÚ tienes que decirle** qué archivos revisar
-- ❌ **TÚ tienes que investigar** las líneas problemáticas
-- ❌ No busca proactivamente en múltiples ubicaciones
-- ❌ No encadena búsquedas automáticamente
-- ❌ Te conviertes en su asistente, no al revés
 
 **Con Claude Sonnet/Haiku (trabajo autónomo correcto):**
 ```
