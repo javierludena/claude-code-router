@@ -6,17 +6,15 @@
 
 <hr>
 
-> 我目前正在寻找 **Agent 开发相关的工作机会**，可 base 在 **杭州**，也接受 **远程** 合作。如果你对我的项目感兴趣，或有合适的岗位/合作机会，欢迎联系我！ 📧 Email: m@musiiot.top
+![](blog/images/sponsors/glm-zh.jpg)
+> GLM CODING PLAN 是专为AI编码打造的订阅套餐，每月最低仅需20元，即可在十余款主流AI编码工具如Claude Code、中畅享智谱旗舰模型GLM-4.7，为开发者提供顶尖的编码体验。   
+> 智谱AI为本软件提供了特别优惠，使用以下链接购买可以享受九折优惠：https://www.bigmodel.cn/claude-code?ic=RRVJPB5SII
+
+> [从CLI工具风格看工具渐进式披露](/blog/zh/从CLI工具风格看工具渐进式披露.md)
 
 > 一款强大的工具，可将 Claude Code 请求路由到不同的模型，并自定义任何请求。
 
-> 现在你可以通过[心流平台](https://platform.iflow.cn/docs/api-mode)免费使用`GLM-4.5`、`Kimi-K2`、`Qwen3-Coder-480B-A35B`、`DeepSeek v3.1`等模型。     
-> 你可以使用`ccr ui`命令在UI中直接导入`iflow`模板，值得注意的是心流限制每位用户的并发数为1，意味着你需要将`background`路由到其他模型。      
-> 如果你想获得更好的体验，可以尝试[iFlow CLI](https://cli.iflow.cn)。      
-
 ![](blog/images/claude-code.png)
-
-![](blog/images/roadmap.svg)
 
 
 ## ✨ 功能
@@ -206,6 +204,95 @@ ccr ui
 这将打开一个基于 Web 的界面，您可以在其中轻松查看和编辑您的 `config.json` 文件。
 
 ![UI](/blog/images/ui.png)
+
+### 5. CLI 模型管理
+
+对于偏好终端工作流的用户，可以使用交互式 CLI 模型选择器：
+
+```shell
+ccr model
+```
+
+该命令提供交互式界面来：
+
+- 查看当前配置
+- 查看所有配置的模型（default、background、think、longContext、webSearch、image）
+- 切换模型：快速更改每个路由器类型使用的模型
+- 添加新模型：向现有提供商添加模型
+- 创建新提供商：设置完整的提供商配置，包括：
+   - 提供商名称和 API 端点
+   - API 密钥
+   - 可用模型
+   - Transformer 配置，支持：
+     - 多个转换器（openrouter、deepseek、gemini 等）
+     - Transformer 选项（例如，带自定义限制的 maxtoken）
+     - 特定于提供商的路由（例如，OpenRouter 提供商偏好）
+
+CLI 工具验证所有输入并提供有用的提示来引导您完成配置过程，使管理复杂的设置变得容易，无需手动编辑 JSON 文件。
+
+### 6. 预设管理
+
+预设允许您轻松保存、共享和重用配置。您可以将当前配置导出为预设，并从文件或 URL 安装预设。
+
+```shell
+# 将当前配置导出为预设
+ccr preset export my-preset
+
+# 使用元数据导出
+ccr preset export my-preset --description "我的 OpenAI 配置" --author "您的名字" --tags "openai,生产环境"
+
+# 从本地目录安装预设
+ccr preset install /path/to/preset
+
+# 列出所有已安装的预设
+ccr preset list
+
+# 显示预设信息
+ccr preset info my-preset
+
+# 删除预设
+ccr preset delete my-preset
+```
+
+**预设功能：**
+- **导出**：将当前配置保存为预设目录（包含 manifest.json）
+- **安装**：从本地目录安装预设
+- **敏感数据处理**：导出期间自动清理 API 密钥和其他敏感数据（标记为 `{{field}}` 占位符）
+- **动态配置**：预设可以包含输入架构，用于在安装期间收集所需信息
+- **版本控制**：每个预设包含版本元数据，用于跟踪更新
+
+**预设文件结构：**
+```
+~/.claude-code-router/presets/
+├── my-preset/
+│   └── manifest.json    # 包含配置和元数据
+```
+
+### 7. Activate 命令（环境变量设置）
+
+`activate` 命令允许您在 shell 中全局设置环境变量，使您能够直接使用 `claude` 命令或将 Claude Code Router 与使用 Agent SDK 构建的应用程序集成。
+
+要激活环境变量，请运行：
+
+```shell
+eval "$(ccr activate)"
+```
+
+此命令会以 shell 友好的格式输出必要的环境变量，这些变量将在当前的 shell 会话中设置。激活后，您可以：
+
+- **直接使用 `claude` 命令**：无需使用 `ccr code` 即可运行 `claude` 命令。`claude` 命令将自动通过 Claude Code Router 路由请求。
+- **与 Agent SDK 应用程序集成**：使用 Anthropic Agent SDK 构建的应用程序将自动使用配置的路由器和模型。
+
+`activate` 命令设置以下环境变量：
+
+- `ANTHROPIC_AUTH_TOKEN`: 来自配置的 API 密钥
+- `ANTHROPIC_BASE_URL`: 本地路由器端点（默认：`http://127.0.0.1:3456`）
+- `NO_PROXY`: 设置为 `127.0.0.1` 以防止代理干扰
+- `DISABLE_TELEMETRY`: 禁用遥测
+- `DISABLE_COST_WARNINGS`: 禁用成本警告
+- `API_TIMEOUT_MS`: 来自配置的 API 超时时间
+
+> **注意**：在使用激活的环境变量之前，请确保 Claude Code Router 服务正在运行（`ccr start`）。环境变量仅在当前 shell 会话中有效。要使其持久化，您可以将 `eval "$(ccr activate)"` 添加到您的 shell 配置文件（例如 `~/.zshrc` 或 `~/.bashrc`）中。
 
 #### Providers
 
@@ -571,7 +658,16 @@ jobs:
 - [@苗大](https://github.com/WitMiao)
 - @\*呢
 - @\d*u
-
+- @crizcraig
+- s\*s
+- \*火
+- \*勤
+- \*\*锟
+- \*涛
+- \*\*明
+- \*知
+- \*语
+- \*瓜
 
 （如果您的名字被屏蔽，请通过我的主页电子邮件与我联系，以便使用您的 GitHub 用户名进行更新。）
 
