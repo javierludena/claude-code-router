@@ -11,6 +11,10 @@ Abre **CMD** (no PowerShell) y ejecuta:
 curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd
 ```
 
+Añadir en el PATH en el windows
+
+C:\Users\%USERPROFILE%\.local\bin
+
 Esto instala Claude Code de forma nativa en Windows. Al terminar verifica:
 
 ```cmd
