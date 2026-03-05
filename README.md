@@ -47,7 +47,7 @@ npm install -g @anthropic-ai/claude-code
 
 ```bash
 # Clonar el repositorio
-git clone https://github.com/javierludena/claude-code-router.git
+git clone -b v1.0.64 https://github.com/javierludena/claude-code-router.git
 cd claude-code-router
 
 # Instalar dependencias
