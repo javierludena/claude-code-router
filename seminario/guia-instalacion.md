@@ -5,15 +5,19 @@
 
 ## Paso 1 — Instalar Claude Code
 
-Abre **CMD** (no PowerShell) y ejecuta:
+Abre **CMD** (no PowerShell sólo para este paso) y ejecuta:
 
 ```cmd
 curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd
 ```
 
-Añadir en el PATH en el windows
+Añadir en el PATH en el windows (opcion de arriba en la ventana)
 
-C:\Users\%USERPROFILE%\.local\bin
+<img width="1558" height="713" alt="image" src="https://github.com/user-attachments/assets/62fca9c4-f7de-41af-af68-2db0b8ed1761" />
+
+```
+C:\Users\TU_USUARIO\.local\bin
+```
 
 Esto instala Claude Code de forma nativa en Windows. Al terminar verifica:
 
@@ -28,7 +32,7 @@ claude --version
 Descarga e instala **NVM for Windows** desde:
 `https://github.com/coreybutler/nvm-windows/releases`
 
-Luego en CMD:
+Luego en powershell:
 
 ```cmd
 nvm install latest
@@ -40,7 +44,7 @@ node -v
 
 ## Paso 3 — Instalar Claude Code Router (CCR)
 
-```cmd
+```powershell
 git clone https://github.com/javierludena/claude-code-router
 cd claude-code-router
 npm install
@@ -104,6 +108,8 @@ Crea el archivo `config.json` en la carpeta del paso anterior con el contenido d
 
 ### MyCopilot Silver
 
+Nota el modelo Gemini.Pro.2.5 está dando error por no estar activado extended thinking
+
 ```json
 {
   "LOG": true,
@@ -125,6 +131,32 @@ Crea el archivo `config.json` en la carpeta del paso anterior con el contenido d
     "longContext": "altia,mycopilotsilver-claude-haiku-4.5",
     "longContextThreshold": 999999
   }
+}
+```
+
+### MyCopilot Bronze
+
+```json
+{
+    "LOG": true,
+    "PORT": 3456,
+    "Providers": [
+        {
+            "name": "altia",
+            "api_base_url": "https://llmproxy.altia.es/v1/chat/completions",
+            "api_key": "TU_API_KEY_AQUI",
+            "models": [
+                "mycopilotbronze-gemini-2.5-flash"
+            ]
+        }
+    ],
+    "Router": {
+        "default": "altia,mycopilotbronze-gemini-2.5-flash",
+        "background": "altia,mycopilotbronze-gemini-2.5-flash",
+        "think": "altia,mycopilotbronze-gemini-2.5-flash",
+        "longContext": "altia,mycopilotbronze-gemini-2.5-flash",
+        "longContextThreshold": 999999
+    }
 }
 ```
 
