@@ -196,11 +196,19 @@ Luego edita el `config.json` según tu licencia:
 
 ### 5. Arrancar y usar
 
+Necesitas **2 terminales**:
+
+**Terminal 1** — Arranca el proxy local (mantenlo abierto):
 ```cmd
 ccr start
-ccr status
+```
+> El router queda activo en local escuchando peticiones. No cierres esta terminal.
+
+**Terminal 2** — Ejecuta Claude Code apuntando al proxy:
+```cmd
 ccr code
 ```
+> Abre Claude Code conectado al llmproxy de Altia (o el proveedor configurado).
 
 ---
 
