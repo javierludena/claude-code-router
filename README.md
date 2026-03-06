@@ -40,6 +40,8 @@ Añade al PATH de Windows:
 C:\Users\TU_USUARIO\.local\bin
 ```
 
+<img width="1558" height="713" alt="image" src="https://github.com/user-attachments/assets/62fca9c4-f7de-41af-af68-2db0b8ed1761" />
+
 Verifica:
 ```cmd
 claude --version
