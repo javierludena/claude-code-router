@@ -41,7 +41,7 @@ node -v
 ## Paso 3 — Instalar Claude Code Router (CCR)
 
 ```cmd
-git clone https://github.com/javierludena/claude-code-router.git
+git clone https://github.com/javierludena/claude-code-router
 cd claude-code-router
 npm install
 npm run build
