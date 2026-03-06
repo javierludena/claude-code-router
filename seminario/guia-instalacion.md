@@ -13,11 +13,13 @@ curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del in
 
 Añadir en el PATH en el windows (opcion de arriba en la ventana)
 
-<img width="1558" height="713" alt="image" src="https://github.com/user-attachments/assets/62fca9c4-f7de-41af-af68-2db0b8ed1761" />
 
 ```
 C:\Users\TU_USUARIO\.local\bin
 ```
+
+<img width="1558" height="713" alt="image" src="https://github.com/user-attachments/assets/62fca9c4-f7de-41af-af68-2db0b8ed1761" />
+
 
 Esto instala Claude Code de forma nativa en Windows. Al terminar verifica:
 
