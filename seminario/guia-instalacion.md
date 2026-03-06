@@ -69,10 +69,10 @@ El router busca la configuración en:
 C:\Users\TU_USUARIO\.claude-code-router\config.json
 ```
 
-Crea la carpeta si no existe:
+Crea la carpeta si no existe con minima configuración (copiando el directorio en el explorador ya puedes sobrescribir con tu configuracion mycopilot):
 
 ```cmd
-mkdir %USERPROFILE%\.claude-code-router
+ccr start
 ```
 
 ---
